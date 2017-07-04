@@ -17,13 +17,15 @@ opt = {
    ntrain = math.huge,     -- #  of examples per epoch. math.huge for full dataset
    display = 1,            -- display samples while training. 0 = false
    display_id = 10,        -- display window id.
-   gpu = 1,                -- gpu = 0 is CPU mode. gpu=X is GPU mode on GPU X
+   gpu = 0,                -- gpu = 0 is CPU mode. gpu=X is GPU mode on GPU X
    name = 'experiment1',
    noise = 'normal',       -- uniform / normal
 }
 
 -- one-line argument parser. parses enviroment variables to override the defaults
 for k,v in pairs(opt) do opt[k] = tonumber(os.getenv(k)) or os.getenv(k) or opt[k] end
+
+opt["dataset"] = "folder"
 print(opt)
 if opt.display == 0 then opt.display = false end
 
@@ -63,6 +65,8 @@ local SpatialFullConvolution = nn.SpatialFullConvolution
 local netG = nn.Sequential()
 -- input is Z, going into a convolution
 netG:add(SpatialFullConvolution(nz, ngf * 8, 4, 4))
+-- do not understand SpatialFullConvolution
+
 netG:add(SpatialBatchNormalization(ngf * 8)):add(nn.ReLU(true))
 -- state size: (ngf*8) x 4 x 4
 netG:add(SpatialFullConvolution(ngf * 8, ngf * 4, 4, 4, 2, 2, 1, 1))
